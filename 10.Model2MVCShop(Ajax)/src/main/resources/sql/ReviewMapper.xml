@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewMapper">
+
+	<resultMap id="reviewSelectMap" type="review">
+		<result property="revNo" column="rev_no" jdbcType="INTEGER" />
+		<result property="prodNo" column="prod_no" jdbcType="INTEGER" />
+		<result property="buyer" column="buyer_id" jdbcType="VARCHAR" />
+		<result property="revDate" column="rev_date" jdbcType="DATE" />
+		<result property="star" column="star" jdbcType="INTEGER" />
+		<result property="reviewSentence" column="review" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- SQL : INSERT -->
+	<insert id="addReview" parameterType="review">
+		INSERT
+		INTO review( rev_no , prod_no , buyer_id , rev_date , star, review)
+		VALUES (seq_review_rev_no.NEXTVAL , #{prodNo} , #{buyer} , SYSDATE , #{star} , #{reviewSentence})
+	</insert>
+	
+	<select id="getReviewList" parameterType="int" resultMap="reviewSelectMap">
+		SELECT rev_no, buyer_id, rev_date, star, review
+		FROM review
+		WHERE prod_no = #{prodNo}
+	</select>
+	
+	<select id="countReviewNum" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM(SELECT rev_no, prod_no, star
+			 FROM review
+			 WHERE review.prod_no = #{prod_no})countTable
+	</select>
+	 
+</mapper>

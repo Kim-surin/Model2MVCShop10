@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProductMapper">
+
+	<resultMap id="productSelectMap" type="product">
+		<result property="prodNo" column="prod_no" jdbcType="INTEGER" />
+		<result property="prodName" column="prod_name" jdbcType="INTEGER" />
+		<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR" />
+		<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR" />
+		<result property="price" column="price" jdbcType="INTEGER" />
+		<result property="fileName" column="image_file" jdbcType="VARCHAR" />
+		<result property="regDate" column="reg_date" jdbcType="DATE" />
+		<result property="amount" column="amount" jdbcType="INTEGER" />
+		<result property="orderCount" column="order_count" jdbcType="INTEGER" />
+		<result property="star" column="star" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- SQL : INSERT -->
+	<insert id="addProduct" parameterType="product">
+		INSERT
+		INTO product( prod_no , prod_name , prod_detail , manufacture_day ,
+		price, image_file, reg_date, amount , order_count, star)
+		VALUES ( seq_product_prod_no.NEXTVAL , #{prodName} , #{prodDetail} ,
+		#{manuDate} , #{price:INTEGER} ,
+		#{fileName:VARCHAR} , SYSDATE , #{amount:INTEGER} , 0, 0 )
+	</insert>
+	
+	<!-- SQL : SELECT ONE -->
+	<select id="getProduct" parameterType="int" resultMap="productSelectMap">
+		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count, TRANSACTION.tran_status_code 
+		FROM product, transaction
+		WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+) AND PRODUCT.prod_no = #{prodNo}
+	</select>
+	
+	<!-- SQL : UPDATE -->
+	<update id="updateProduct" parameterType="product">
+		UPDATE PRODUCT
+		<set>
+			prod_name = #{prodName:VARCHAR} ,
+			prod_detail = #{prodDetail:VARCHAR},
+			manufacture_day = #{manuDate:DATE},
+			price = #{price:INTEGER},
+			image_file = #{fileName:VARCHAR},
+			amount = #{amount:INTEGER},
+			order_count = #{orderCount:INTEGER}
+			<if test ="star != null">
+			, star = #{star:INTEGER}
+			</if>
+		</set>
+		WHERE prod_no = #{prodNo}
+	</update>
+	
+	<!-- SQL : SELECT LIST -->
+	<select id="getProductList" parameterType="search" resultMap="productSelectMap">
+		SELECT *
+		FROM (SELECT inner_table.* , ROWNUM AS row_seq
+			  FROM ( SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+					 FROM product, transaction
+		
+			<if test="searchCondition != null">
+			WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+)
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRODUCT.price = #{searchKeyword}
+				</if>
+				<if test="searchCondition == 3 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 4 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 5 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 6 and searchPrice1 !='' and searchPrice2 !=''">
+					AND PRODUCT.price BETWEEN #{searchPrice1} AND #{searchPrice2}
+				</if>
+			GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+		<if test="searchCondition == 3 or searchCondition == 6">
+			ORDER BY PRODUCT.price)inner_table
+		</if>
+		<if test="searchCondition == 4">
+			ORDER BY PRODUCT.price DESC)inner_table
+		</if>
+		<if test="searchCondition == 5">
+			ORDER BY PRODUCT.manufacture_day DESC)inner_table
+		</if>
+		<if test="(searchCondition == 1 or searchCondition == 2)">
+			ORDER BY PRODUCT.prod_no)inner_table
+		</if>
+	</if>
+		<if test="searchCondition == null">
+			WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+)
+			GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+			ORDER BY PRODUCT.prod_no)inner_table		
+		</if>		
+		WHERE ROWNUM &lt;= #{endRowNum})
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}
+	</select>	
+	
+	
+	<select id="getTotalCount" parameterType="search" resultType="int">
+		SELECT COUNT(*)
+		FROM(SELECT inner_table.* , ROWNUM AS row_seq
+			  FROM ( SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+					 FROM product, transaction
+		
+			<if test="searchCondition != null">
+			WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+)
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRODUCT.price = #{searchKeyword}
+				</if>
+				<if test="searchCondition == 3 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 4 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 5 and searchKeyword !='' ">
+					AND UPPER(PRODUCT.prod_name) LIKE UPPER('%${searchKeyword}%')
+				</if>
+				<if test="searchCondition == 6 and searchPrice1 !='' and searchPrice2 !=''">
+					AND PRODUCT.price BETWEEN #{searchPrice1} AND #{searchPrice2}
+				</if>
+			GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+		<if test="searchCondition == 3 or searchCondition == 6">
+			ORDER BY PRODUCT.price)inner_table
+		</if>
+		<if test="searchCondition == 4">
+			ORDER BY PRODUCT.price DESC)inner_table
+		</if>
+		<if test="searchCondition == 5">
+			ORDER BY PRODUCT.manufacture_day DESC)inner_table
+		</if>
+		<if test="(searchCondition == 1 or searchCondition == 2)">
+			ORDER BY PRODUCT.prod_no)inner_table
+		</if>
+	</if>
+		<if test="searchCondition == null">
+			WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+)
+			GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.star, PRODUCT.order_count
+			ORDER BY PRODUCT.prod_no)inner_table		
+		</if>) countTable						
+	 </select>
+	 
+	  <select id="getProductByPurchase" parameterType="int" resultMap="productSelectMap">
+		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count 
+		FROM product, transaction
+		WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+) AND PRODUCT.prod_no = #{prodNo}
+		GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count
+	</select>
+	
+</mapper>
