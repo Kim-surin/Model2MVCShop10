@@ -38,13 +38,13 @@ $(function(){
 			return;
 		}	
 		if($("#phone2").val() != "" && $("#phone3").val() != "") {
-			phone = $("#phone1").val() + "-" + $("#phone2").val() + "-" + $("#phone3").val();
+			$("#receiverPhone").val($("#phone1").val() + "-" + $("#phone2").val() + "-" + $("#phone3").val());
 		} else {
 			alert("구매자 번호는 반드시 입력하셔야 합니다.");
 			return;
 		}
 		if(addr == null || addr.length<1){
-			alert("제조일자는 반드시 입력하셔야 합니다.");
+			alert("주소는 반드시 입력하셔야 합니다.");
 			return;
 		}	
 
@@ -205,11 +205,11 @@ $(function(){
 			</select>
 			
 			
-			<input 	type="text" name="phone2" value="<c:if test="${! empty tel}">${fn:split(user.phone,'-')[1]}</c:if>" class="ct_input_g" style="width:100px; height:19px"  maxLength="9" >
+			<input 	type="text" id="phone2" name="phone2" value="<c:if test="${! empty tel}">${fn:split(user.phone,'-')[1]}</c:if>" class="ct_input_g" style="width:100px; height:19px"  maxLength="9" >
 			- 
-			<input 	type="text" name="phone3" value="<c:if test="${! empty tel}">${fn:split(user.phone,'-')[2]}</c:if>"  class="ct_input_g"  style="width:100px; height:19px"  maxLength="9" >
+			<input 	type="text" id="phone3" name="phone3" value="<c:if test="${! empty tel}">${fn:split(user.phone,'-')[2]}</c:if>"  class="ct_input_g"  style="width:100px; height:19px"  maxLength="9" >
 							
-			<input type="hidden" name="receiverPhone" id="receiverPhone" class="ct_input_g"  />
+			<input type="hidden" name="receiverPhone" id="receiverPhone" value="" class="ct_input_g"  />
 			
 		</td>
 	</tr>

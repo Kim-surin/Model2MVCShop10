@@ -41,8 +41,8 @@ public class ProductController {
 	@Autowired
 	@Qualifier("reviewServiceImpl")
 	private ReviewService reviewService;
-	
-	private static final String UPLOAD_PATH = "C:\\workspace01\\10.Model2MVCShop(Ajax)\\WebContent\\images\\uploadFiles";
+
+	private static final String UPLOAD_PATH = "C:\\Users\\user\\git\\repository\\Model2MVCShop10\\10.Model2MVCShop(Ajax)\\WebContent\\images\\uploadFiles";
 
 	public ProductController() {
 		System.out.println(this.getClass());
@@ -60,23 +60,33 @@ public class ProductController {
 	int pageSize;
 
 	@RequestMapping(value="addProduct")
-	public String addProduct(@ModelAttribute("prodct") Product product, Model model, MultipartFile fileName) throws Exception {
+	public String addProduct(@ModelAttribute("prodct") Product product, Model model, @RequestParam("fileUpload") MultipartFile[] fileUpload) throws Exception {
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> addProduct");
 
-		UUID uuid = UUID.randomUUID();
-	    String saveName = fileName.getOriginalFilename();
+		//UUID uuid = UUID.randomUUID();
+		
+		String manySaveName = "";
+		
+		 for(MultipartFile f : fileUpload){
+			 String originalFileName = f.getOriginalFilename();
+			 String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			 //String savedFileName =  UUID.randomUUID()+"_"+originalFileName;
+			 
+			 manySaveName+=originalFileName+"/";
 
+			    // 저장할 File 객체를 생성(껍데기 파일)
+			    File saveFile = new File(UPLOAD_PATH,originalFileName); // 저장할 폴더 이름, 저장할 파일 이름
 
-	    // 저장할 File 객체를 생성(껍데기 파일)
-	    File saveFile = new File(UPLOAD_PATH,saveName); // 저장할 폴더 이름, 저장할 파일 이름
-
-	    try {
-	    	fileName.transferTo(saveFile); // 업로드 파일에 saveFile이라는 껍데기 입힘
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return null;
-	    }
+			    try {
+			    	f.transferTo(saveFile); // 업로드 파일에 saveFile이라는 껍데기 입힘
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			        return null;
+			    }
+		    }
+		
+	    
 		
 		 String manuDate = "";
 			String[] manuDateSplit = product.getManuDate().split("-");
@@ -85,7 +95,7 @@ public class ProductController {
 				manuDate += manuDateSplit[i];
 			}
 			
-			product.setFileName(saveName);
+			product.setFileName(manySaveName);
 			product.setProTranCode("1");
 			product.setManuDate(manuDate);
 			productService.addProduct(product);

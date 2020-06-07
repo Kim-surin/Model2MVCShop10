@@ -2,7 +2,7 @@
     pageEncoding="EUC-KR"%>
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <head>
 <title>상품등록</title>
@@ -117,7 +117,10 @@ $(function(){
 	<tr>
 		<td width="104" class="ct_write">상품이미지</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01"><img src="/images/uploadFiles/${product.fileName}"/>
+		<td class="ct_write01">
+		<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
+				<img src="/images/uploadFiles/${fileName}"/>
+				</c:forEach></td>
 			<!-- 테이블 시작 -->
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>

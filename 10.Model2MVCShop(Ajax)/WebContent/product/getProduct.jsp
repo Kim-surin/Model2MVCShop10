@@ -90,7 +90,10 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 				<td width="104" class="ct_write">상품이미지 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle" />
 				</td>
 				<td bgcolor="D6D6D6" width="1"></td>
-				<td class="ct_write01">${product.fileName}</td>
+				<td class="ct_write01">
+				<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
+				<img src="/images/uploadFiles/${fileName}"/>
+				</c:forEach></td>
 			</tr>
 			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -211,7 +214,12 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 				<td width="104" class="ct_write">상품이미지 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle" />
 				</td>
 				<td bgcolor="D6D6D6" width="1"></td>
-				<td class="ct_write01">${product.fileName}</td>
+
+				<td class="ct_write01">
+					<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
+					<img src="/images/uploadFiles/${fileName}"/>
+					</c:forEach>
+				</td>				
 			</tr>
 			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>

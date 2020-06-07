@@ -72,12 +72,17 @@ $(function() {
 				
 				var displayValue="<h3>"	+"상품번호 : "+JSONData.product.prodNo+"<br/>"
 										+"상품명 : " +JSONData.product.prodName+"<br/>"
-										+"상품이미지 : "+JSONData.product.fileName+"<br/>"
-										+"상품상세정보 : "+JSONData.product.prodDetail+"<br/>"
-										+"제조일자 : "+JSONData.product.manuDate+"<br/>"
-										+"가격 : "+JSONData.product.price+"<br/>"
-										+"수량 : "+JSONData.product.amount+"<br/>"
-										+"등록일자 : "+JSONData.product.regDate+"<br/>"	
+										+"상품이미지 : "
+										var imgArr = JSONData.product.fileName.split("/");
+										for(var i=0; i<imgArr.length; i++){
+											displayValue+="<img src='/images/uploadFiles/"+imgArr[i]+"'/>"
+										}
+										displayValue+="<br/>"
+										displayValue+="상품상세정보 : "+JSONData.product.prodDetail+"<br/>"
+										displayValue+="제조일자 : "+JSONData.product.manuDate+"<br/>"
+										displayValue+="가격 : "+JSONData.product.price+"<br/>"
+										displayValue+="수량 : "+JSONData.product.amount+"<br/>"
+										displayValue+="등록일자 : "+JSONData.product.regDate+"<br/>"	
 										if(JSONData.review != null){
 										for(var i=0; i<JSONData.review.length; i++){
 											displayValue+="리뷰 작성자 : "+JSONData.review[i].buyer+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
