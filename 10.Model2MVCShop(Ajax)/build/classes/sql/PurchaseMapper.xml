@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PurchaseMapper">
+
+<resultMap id = "purchaseSelectMap" 	type = "purchase">
+<result property="tranNo"				column="tran_no"			jdbcType="INTEGER"/>
+<result property="purchaseProd.prodNo"	column="prod_no" 			jdbcType="INTEGER"/>
+<result property="buyer.userId"			column="buyer_id" 			jdbcType="VARCHAR"/>
+<result property="paymentOption"		column="payment_option" 	jdbcType="VARCHAR"/>
+<result property="receiverName"			column="receiver_name" 		jdbcType="VARCHAR"/>
+<result property="receiverPhone"		column="receiver_phone" 	jdbcType="VARCHAR"/>
+<result property="dlvyAddr"				column="demailaddr"			jdbcType="VARCHAR"/>
+<result property="dlvyRequest"			column="dlvy_request" 		jdbcType="VARCHAR"/>
+<result property="tranCode"				column="tran_status_code" 	jdbcType="VARCHAR"/>
+<result property="orderDate"			column="order_data"			jdbcType="DATE"/>
+<result property="dlvyDate"				column="dlvy_date" 			jdbcType="DATE"/>
+<result property="revStatusCode"		column="rev_status_code" 	jdbcType="CHAR"/>
+</resultMap>
+
+<insert id="addPurchase"	parameterType="purchase">
+	INSERT INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date, rev_status_code)
+				VALUES(seq_transaction_tran_no.nextval, #{purchaseProd.prodNo:INTEGER}, #{buyer.userId}, #{paymentOption}, #{receiverName}, #{receiverPhone}, #{dlvyAddr}, #{dlvyRequest}, #{tranCode}, SYSDATE, #{dlvyDate}, #{revStatusCode})
+</insert>
+
+<select id="getPurchaseBytranNo"	parameterType="int"		resultMap="purchaseSelectMap">
+	SELECT *
+	FROM transaction
+	where tran_no = #{value}
+</select>
+
+<select id="getPurchaseByprodNo"	parameterType="int"		resultMap="purchaseSelectMap">
+	SELECT *
+	FROM transaction
+	where prod_no = #{value}
+</select>
+
+<update id="updatePurchase"		parameterType="int">
+	UPDATE transaction
+	SET buyer_id = #{buyer.userId}, payment_option = #{paymentOption}, receiver_name = #{receiverName},  receiver_phone = #{receiverPhone}, demailaddr = #{dlvyAddr}, dlvy_request = #{dlvyRequest}, dlvy_date = #{dlvyDate} 
+	WHERE tran_no = #{tranNo}
+</update>
+
+<update id="updateTranCode"		parameterType="purchase">
+	UPDATE transaction
+	<set>
+	<if test="tranCode == 1">tran_status_code='2'</if>
+	<if test="tranCode == 2">tran_status_code='3'</if>
+	<if test="tranCode == 3">tran_status_code='4'</if>
+	</set>
+	WHERE tran_no = #{tranNo}
+</update>
+
+<update id="updateRevStatusCode" parameterType="purchase">
+UPDATE transaction
+SET rev_status_code = '1'
+WHERE tran_no = #{tranNo}
+</update>
+
+<select id="getPurchaseList"	parameterType="map"		resultMap="purchaseSelectMap">
+	SELECT *
+	FROM(SELECT inner_table.*, ROWNUM AS row_seq
+		 FROM (SELECT transaction.tran_no, transaction.prod_no, transaction.buyer_id, transaction.payment_option, transaction.receiver_name, transaction.receiver_phone, transaction.demailaddr, transaction.dlvy_request, transaction.order_data, transaction.dlvy_date, transaction.tran_status_code, transaction.rev_status_code
+			   FROM transaction, users 
+		   	   WHERE transaction.buyer_id = users.user_id AND users.user_id = #{buyerId} 
+			   ORDER BY transaction.tran_no)inner_table
+		 WHERE ROWNUM &lt;= #{search.endRowNum})
+	WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum} 
+</select>
+
+<select id="getDeliveryList"		parameterType="int"		resultMap="purchaseSelectMap">
+	SELECT transaction.tran_no, transaction.prod_no, transaction.buyer_id, transaction.payment_option, transaction.receiver_name, transaction.receiver_phone, transaction.dlvy_request, transaction.order_data, transaction.dlvy_date, transaction.tran_status_code
+	FROM transaction 
+	WHERE transaction.tran_status_code = 2 AND transaction.prod_no = #{value}
+</select>
+
+<select id="getTotalCountByPurchaseList"	parameterType="string"		resultType="int">
+	SELECT COUNT(*)
+	FROM (SELECT transaction.tran_no, transaction.prod_no, transaction.buyer_id, transaction.payment_option, transaction.receiver_name, transaction.receiver_phone, transaction.demailaddr, transaction.dlvy_request, transaction.order_data, transaction.dlvy_date, transaction.tran_status_code, transaction.rev_status_code
+		  FROM transaction, users 
+		  WHERE transaction.buyer_id = users.user_id AND users.user_id = #{buyerId} 
+		  ORDER BY transaction.tran_no)countTable
+</select>
+
+<select id="getTotalCountByDeliveryList"	parameterType="int"		resultType="int">
+	SELECT COUNT(*)
+	FROM(SELECT transaction.tran_no, transaction.prod_no, transaction.buyer_id, transaction.payment_option, transaction.receiver_name, transaction.receiver_phone, transaction.dlvy_request, transaction.order_data, transaction.dlvy_date, transaction.tran_status_code
+		 FROM transaction 
+		 WHERE transaction.tran_status_code = 2 AND transaction.prod_no = #{value})countTable
+</select>
+
+
+</mapper>
