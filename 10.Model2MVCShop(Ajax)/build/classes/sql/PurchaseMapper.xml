@@ -19,11 +19,12 @@
 <result property="orderDate"			column="order_data"			jdbcType="DATE"/>
 <result property="dlvyDate"				column="dlvy_date" 			jdbcType="DATE"/>
 <result property="revStatusCode"		column="rev_status_code" 	jdbcType="CHAR"/>
+<result property="uuid"					column="uuid" 				jdbcType="VARCHAR"/>
 </resultMap>
 
 <insert id="addPurchase"	parameterType="purchase">
-	INSERT INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date, rev_status_code)
-				VALUES(seq_transaction_tran_no.nextval, #{purchaseProd.prodNo:INTEGER}, #{buyer.userId}, #{paymentOption}, #{receiverName}, #{receiverPhone}, #{dlvyAddr}, #{dlvyRequest}, #{tranCode}, SYSDATE, #{dlvyDate}, #{revStatusCode})
+	INSERT INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date, rev_status_code, uuid)
+				VALUES(seq_transaction_tran_no.nextval, #{purchaseProd.prodNo:INTEGER}, #{buyer.userId}, #{paymentOption}, #{receiverName}, #{receiverPhone}, #{dlvyAddr}, #{dlvyRequest}, #{tranCode}, SYSDATE, #{dlvyDate}, #{revStatusCode}, #{uuid})
 </insert>
 
 <select id="getPurchaseBytranNo"	parameterType="int"		resultMap="purchaseSelectMap">
@@ -92,5 +93,10 @@ WHERE tran_no = #{tranNo}
 		 WHERE transaction.tran_status_code = 2 AND transaction.prod_no = #{value})countTable
 </select>
 
+<select id="getPurchaseByUUID"	parameterType="string" resultMap="purchaseSelectMap">
+SELECT *
+FROM transaction
+WHERE uuid = #{value}
+</select>
 
 </mapper>

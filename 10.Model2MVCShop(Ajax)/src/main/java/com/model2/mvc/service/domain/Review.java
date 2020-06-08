@@ -9,6 +9,7 @@ public class Review {
 	private Date revDate;		// ¸®ºä µî·Ï ³¯Â¥
 	private int star;				// ÆòÁ¡
 	private String reviewSentence;	//¸®ºä
+	private String reviewImage;
 	
 	public Review() {
 		
@@ -32,6 +33,14 @@ public class Review {
 
 	public int getStar() {
 		return star;
+	}
+
+	public String getReviewImage() {
+		return reviewImage;
+	}
+
+	public void setReviewImage(String reviewImage) {
+		this.reviewImage = reviewImage;
 	}
 
 	public String getReviewSentence() {

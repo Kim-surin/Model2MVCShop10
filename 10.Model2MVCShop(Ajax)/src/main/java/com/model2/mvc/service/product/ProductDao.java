@@ -16,7 +16,8 @@ public interface ProductDao {
 	public void updateProduct(Product product) throws Exception;
 	
 	public int getTotalCount(Search search) throws Exception;
-		
+	
+	public Product getProductByPurchase(int prodNo) throws Exception;
 	//public String makeCurrentPageSql(String sql, Search search);
 	
 }

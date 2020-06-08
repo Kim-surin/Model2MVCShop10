@@ -23,7 +23,12 @@ $(function(){
 		var detail = $("#prodDetail").val();
 		var manuDate = $("#manuDate").val();
 		var price = $("#price").val();
-
+		var amount = $("#amount").val();
+		
+		var betweenManuDate = new Date(manuDate);
+		var betweenStandardDate = new Date();		
+		var betweenDay = (betweenManuDate.getTime() - betweenStandardDate.getTime())/1000/60/60/24; 
+		
 		if(name == null || name.length<1){
 			alert("상품명은 반드시 입력하여야 합니다.");
 			return;
@@ -39,6 +44,30 @@ $(function(){
 
 		if(price == null || price.length<1){
 			alert("가격은 반드시 입력하셔야 합니다.");
+			return;
+		}
+		
+		if(amount == null || amount.length<1){
+			alert("수량은 반드시 입력하셔야 합니다.");
+			return;
+		}
+		
+		
+		if(! price.match(/^[0-9]+$/)){
+			alert("가격은 숫자만 입력가능합니다.");
+			$("#price").focus();
+			return;
+		}
+		
+		if(! amount.match(/^[0-9]+$/)){
+			alert("수량은 숫자만 입력가능합니다.");
+			$("#amount").focus();
+			return;
+		}
+		
+		if(betweenDay > 1){
+			var date = betweenStandardDate.getFullYear() + "/" + (betweenStandardDate.getMonth()+1) + "/" + betweenStandardDate.getDate();
+			alert("입력 가능한 최근 제조 날짜 : "+date);
 			return;
 		}
 

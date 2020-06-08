@@ -16,4 +16,5 @@ public interface ProductService {
 
 	public void updateProduct(Product product) throws Exception;
 	
+	public Product getProductByPurchase(int prodNo) throws Exception;
 }

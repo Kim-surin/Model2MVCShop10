@@ -31,7 +31,7 @@ CREATE TABLE product (
 	prod_detail 				VARCHAR2(200),
 	manufacture_day				VARCHAR2(8),
 	price 					NUMBER(10),
-	image_file 				VARCHAR2(100),
+	image_file 				VARCHAR2(300),
 	reg_date 					DATE,
 	amount					NUMBER(10),
 	order_count				NUMBER(10),
@@ -62,6 +62,7 @@ CREATE TABLE review(
 	rev_date					DATE,
 	star					NUMBER(1),
 	review					VARCHAR(300),	
+	review_image				VARCHAR(100),
 	PRIMARY KEY(rev_no)
 );
 

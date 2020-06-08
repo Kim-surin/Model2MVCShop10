@@ -1,6 +1,7 @@
 package com.model2.mvc.service.domain;
 
 import java.sql.Date;
+import java.util.UUID;
 
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.User;
@@ -20,7 +21,7 @@ public class Purchase {
 	private String receiverPhone;
 	private String tranCode;
 	private boolean revStatusCode;	//0이면 No Review 1이면 Review
-
+	private String uuid;
 	
 	public Purchase(){
 	}
@@ -98,6 +99,14 @@ public class Purchase {
 
 	public void setRevStatusCode(boolean revStatusCode) {
 		this.revStatusCode = revStatusCode;
+	}
+	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	@Override

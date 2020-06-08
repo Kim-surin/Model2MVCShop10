@@ -1,6 +1,7 @@
 package com.model2.mvc.service.domain;
 
 import java.sql.Date;
+import java.util.UUID;
 
 
 public class Product {
@@ -14,6 +15,7 @@ public class Product {
 	private int prodNo;
 	private Date regDate;
 	private String proTranCode;
+	private int totalStar;
 	private int star;
 	private int orderCount;
 	
@@ -89,6 +91,14 @@ public class Product {
 
 	public void setOrderCount(int orderCount) {
 		this.orderCount = orderCount;
+	}
+
+	public int getTotalStar() {
+		return totalStar;
+	}
+
+	public void setTotalStar(int totalStar) {
+		this.totalStar = totalStar;
 	}
 
 	@Override

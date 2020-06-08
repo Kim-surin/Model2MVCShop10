@@ -3,6 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -32,16 +33,58 @@ $(function() {
 	});
 	
 	$("#searchKeyword").on("keydown", function(key){	
+		
+		var searchKeyword = $("#searchKeyword").val();
+		var searchPrice1 = $("#searchPrice1").val();
+		var searchPrice2 = $("#searchPrice2").val();
+		
 		if(key.keyCode==13 ){
+			if($("#searchCondition option:selected").val()=='2' && ! searchKeyword.match(/^[0-9]+$/)){
+				alert("상품 가격 검색 시 숫자만 입력가능합니다.");
+				$("#searchKeyword").focus();
+				return;
+		}
+		
+		if($("#searchCondition option:selected").val()=='6' && ! searchPrice1.match(/^[0-9]+$/) && ! searchPrice2.match(/^[0-9]+$/)){
+			alert("상품 가격 검색 시 숫자만 입력가능합니다.");
+			$("#searchKeyword").focus();
+			return;
+		}		
 			fncGetProductList('1');}
 	});
 	
 	$("#searchPrice2").on("keypress", function(event){	
-		if( event.keyCode==13 ){
+		var searchPrice1 = $("#searchPrice1").val();
+		var searchPrice2 = $("#searchPrice2").val();
+		
+		if( event.keyCode==13 ){	
+			if($("#searchCondition option:selected").val()=='6' && ! searchPrice1.match(/^[0-9]+$/) && ! searchPrice2.match(/^[0-9]+$/)){
+				alert("상품 가격 검색 시 숫자만 입력가능합니다.");
+				$("#searchKeyword").focus();
+				return;
+			}
+						
 			fncGetProductList('1');}
 	});
 	
 	$(".ct_btn01:contains('검색')").on("click", function(){
+		var searchKeyword = $("#searchKeyword").val();
+		var searchPrice1 = $("#searchPrice1").val();
+		var searchPrice2 = $("#searchPrice2").val();
+		
+		if($("#searchCondition option:selected").val()=='2' && ! searchKeyword.match(/^[0-9]+$/)){
+				alert("상품 가격 검색 시 숫자만 입력가능합니다.");
+				$("#searchKeyword").focus();
+				return;
+		}
+		
+		if($("#searchCondition option:selected").val()=='6' && ! searchPrice1.match(/^[0-9]+$/) && ! searchPrice2.match(/^[0-9]+$/)){
+			alert("상품 가격 검색 시 숫자만 입력가능합니다.");
+			$("#searchKeyword").focus();
+			return;
+	}
+		
+		
 		fncGetProductList('1');
 	});
 	
@@ -75,7 +118,8 @@ $(function() {
 										+"상품이미지 : "
 										var imgArr = JSONData.product.fileName.split("/");
 										for(var i=0; i<imgArr.length; i++){
-											displayValue+="<img src='/images/uploadFiles/"+imgArr[i]+"'/>"
+											if(imgArr[i] != ""){
+											displayValue+="<img src='/images/uploadFiles/"+imgArr[i]+"'/>"}
 										}
 										displayValue+="<br/>"
 										displayValue+="상품상세정보 : "+JSONData.product.prodDetail+"<br/>"
@@ -144,7 +188,7 @@ $(function() {
 								<option value="4"
 									${ ! empty search.searchCondition && search.searchCondition==4 ? "selected" : "" }>가격 높은 순</option>
 								<option value="5"
-									${ ! empty search.searchCondition && search.searchCondition==5 ? "selected" : "" }>촤신 상품 순</option>
+									${ ! empty search.searchCondition && search.searchCondition==5 ? "selected" : "" }>최신 상품 순</option>
 								<option value="6"
 									${ ! empty search.searchCondition && search.searchCondition==6 ? "selected" : "" }>가격대 별 상품</option>
 						</select> 
@@ -268,7 +312,7 @@ $(function() {
 								<option value="4"
 									${ ! empty search.searchCondition && search.searchCondition==4 ? "selected" : "" }>가격 높은 순</option>
 								<option value="5"
-									${ ! empty search.searchCondition && search.searchCondition==5 ? "selected" : "" }>촤신 상품 순</option>
+									${ ! empty search.searchCondition && search.searchCondition==5 ? "selected" : "" }>최신 상품 순</option>
 								<option value="6"
 									${ ! empty search.searchCondition && search.searchCondition==6 ? "selected" : "" }>가격대 별 상품</option>
 						</select> 

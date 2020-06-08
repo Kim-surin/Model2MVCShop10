@@ -62,7 +62,7 @@ public class ProductController {
 	@RequestMapping(value="addProduct")
 	public String addProduct(@ModelAttribute("prodct") Product product, Model model, @RequestParam("fileUpload") MultipartFile[] fileUpload) throws Exception {
 		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> addProduct");
+		System.out.println("addProduct");
 
 		//UUID uuid = UUID.randomUUID();
 		
@@ -111,7 +111,7 @@ public class ProductController {
 
 		System.out.println("getProduct");
 		// Business Logic
-		Product product = productService.getProduct(prodNo);
+		Product product = productService.getProductByPurchase(prodNo);
 
 		Cookie cookie = null;
 		Cookie[] cookies = request.getCookies();
@@ -188,8 +188,28 @@ public class ProductController {
 	}
 
 	@RequestMapping(value="updateProduct")
-	public String updateProduct(@ModelAttribute("product") Product product, Model model, HttpSession session, HttpServletRequest request) throws Exception {
+	public String updateProduct(@ModelAttribute("product") Product product, Model model, HttpSession session, HttpServletRequest request, @RequestParam("fileUpload") MultipartFile[] fileUpload) throws Exception {
+		
+		String manySaveName = "";
+		
+		 for(MultipartFile f : fileUpload){
+			 String originalFileName = f.getOriginalFilename();
+			 String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			 //String savedFileName =  UUID.randomUUID()+"_"+originalFileName;
+			 
+			 manySaveName+=originalFileName+"/";
 
+			    // 저장할 File 객체를 생성(껍데기 파일)
+			    File saveFile = new File(UPLOAD_PATH,originalFileName); // 저장할 폴더 이름, 저장할 파일 이름
+
+			    try {
+			    	f.transferTo(saveFile); // 업로드 파일에 saveFile이라는 껍데기 입힘
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			        return null;
+			    }
+		    }
+		
 		String manuDate = "";
 		String[] manuDateSplit = request.getParameter("manuDate").split("-");
 		
@@ -198,6 +218,7 @@ public class ProductController {
 		}
 		
 		product.setManuDate(manuDate);
+		product.setFileName(manySaveName);
 		int prodNo = product.getProdNo();
 		
 		productService.updateProduct(product);
@@ -205,23 +226,5 @@ public class ProductController {
 		return "forward:/product/getProduct?prod_no=" + prodNo;
 	}
 	
-	private String saveFile(MultipartFile file){
-	    // 파일 이름 변경
-	    UUID uuid = UUID.randomUUID();
-	    String saveName = uuid + "_" + file.getOriginalFilename();
-
-	    //logger.info("saveName: {}",saveName);
-
-	    // 저장할 File 객체를 생성(껍데기 파일)ㄴ
-	    File saveFile = new File(UPLOAD_PATH,saveName); // 저장할 폴더 이름, 저장할 파일 이름
-
-	    try {
-	        file.transferTo(saveFile); // 업로드 파일에 saveFile이라는 껍데기 입힘
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return null;
-	    }
-
-	    return saveName;
-	} // end saveFile(
+	
 }

@@ -12,18 +12,19 @@
 		<result property="buyer" column="buyer_id" jdbcType="VARCHAR" />
 		<result property="revDate" column="rev_date" jdbcType="DATE" />
 		<result property="star" column="star" jdbcType="INTEGER" />
+		<result property="reviewImage" column="review_image" jdbcType="VARCHAR" />
 		<result property="reviewSentence" column="review" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<!-- SQL : INSERT -->
 	<insert id="addReview" parameterType="review">
 		INSERT
-		INTO review( rev_no , prod_no , buyer_id , rev_date , star, review)
-		VALUES (seq_review_rev_no.NEXTVAL , #{prodNo} , #{buyer} , SYSDATE , #{star} , #{reviewSentence})
+		INTO review( rev_no , prod_no , buyer_id , rev_date , star, review, review_image)
+		VALUES (seq_review_rev_no.NEXTVAL , #{prodNo} , #{buyer} , SYSDATE , #{star} , #{reviewSentence}, #{reviewImage})
 	</insert>
 	
 	<select id="getReviewList" parameterType="int" resultMap="reviewSelectMap">
-		SELECT rev_no, buyer_id, rev_date, star, review
+		SELECT rev_no, buyer_id, rev_date, star, review, review_image
 		FROM review
 		WHERE prod_no = #{prodNo}
 	</select>
@@ -34,5 +35,6 @@
 			 FROM review
 			 WHERE review.prod_no = #{prod_no})countTable
 	</select>
+	
 	 
 </mapper>
