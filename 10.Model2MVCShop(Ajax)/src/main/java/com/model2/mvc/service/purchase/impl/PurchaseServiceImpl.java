@@ -76,5 +76,9 @@ public class PurchaseServiceImpl implements PurchaseService{
 	public void updateRevStatusCode(Purchase purchase) throws Exception{
 		purchaseDao.updateRevStatusCode(purchase);
 	}
+	
+	public Purchase getPurchaseByUUID(String uuid) throws Exception{
+		return purchaseDao.findPurchaseByUUID(uuid);
+	}
 
 }

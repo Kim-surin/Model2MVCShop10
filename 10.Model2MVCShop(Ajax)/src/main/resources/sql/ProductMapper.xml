@@ -17,20 +17,21 @@
 		<result property="amount" column="amount" jdbcType="INTEGER" />
 		<result property="orderCount" column="order_count" jdbcType="INTEGER" />
 		<result property="star" column="star" jdbcType="INTEGER" />
+		<result property="totalStar" column="total_star" jdbcType="INTEGER" />
 	</resultMap>
 	<!-- SQL : INSERT -->
 	<insert id="addProduct" parameterType="product">
 		INSERT
 		INTO product( prod_no , prod_name , prod_detail , manufacture_day ,
-		price, image_file, reg_date, amount , order_count, star)
+		price, image_file, reg_date, amount , order_count, star, total_star)
 		VALUES ( seq_product_prod_no.NEXTVAL , #{prodName} , #{prodDetail} ,
 		#{manuDate} , #{price:INTEGER} ,
-		#{fileName:VARCHAR} , SYSDATE , #{amount:INTEGER} , 0, 0 )
+		#{fileName:VARCHAR} , SYSDATE , #{amount:INTEGER} , 0, 0, 0)
 	</insert>
 	
 	<!-- SQL : SELECT ONE -->
 	<select id="getProduct" parameterType="int" resultMap="productSelectMap">
-		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count, TRANSACTION.tran_status_code 
+		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count, TRANSACTION.tran_status_code, product.total_star 
 		FROM product, transaction
 		WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+) AND PRODUCT.prod_no = #{prodNo}
 	</select>
@@ -48,6 +49,9 @@
 			order_count = #{orderCount:INTEGER}
 			<if test ="star != null">
 			, star = #{star:INTEGER}
+			</if>
+			<if test ="totalStar != null">
+			, total_star = #{totalStar:INTEGER}
 			</if>
 		</set>
 		WHERE prod_no = #{prodNo}
@@ -152,10 +156,10 @@
 	 </select>
 	 
 	  <select id="getProductByPurchase" parameterType="int" resultMap="productSelectMap">
-		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count 
+		SELECT PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count, product.star, product.total_star
 		FROM product, transaction
 		WHERE PRODUCT.prod_no = TRANSACTION.prod_no(+) AND PRODUCT.prod_no = #{prodNo}
-		GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count
+		GROUP BY PRODUCT.prod_no, PRODUCT.prod_name, PRODUCT.prod_detail, PRODUCT.manufacture_day, PRODUCT.price, PRODUCT.image_file, PRODUCT.reg_date, PRODUCT.amount, PRODUCT.order_count, product.star, product.total_star
 	</select>
 	
 </mapper>
