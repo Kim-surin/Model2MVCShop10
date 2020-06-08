@@ -37,7 +37,7 @@ public class PurchaseDaoImpl implements PurchaseDao {
 	public Purchase findPurchaseByTranNo(int tranNo) throws Exception {
 		Purchase purchase = sqlSession.selectOne("getPurchaseBytranNo", tranNo);
 		purchase.setBuyer((User)sqlSession.selectOne("UserMapper.getUser", purchase.getBuyer().getUserId()));
-		purchase.setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.getProduct", purchase.getPurchaseProd().getProdNo()));
+		purchase.setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.getProductByPurchase", purchase.getPurchaseProd().getProdNo()));
 		return purchase;		 
 	}
 	
@@ -91,4 +91,8 @@ public class PurchaseDaoImpl implements PurchaseDao {
 	public void updateRevStatusCode(Purchase purchase) throws Exception{
 		sqlSession.update("updateRevStatusCode", purchase);
 	}
+	public Purchase findPurchaseByUUID(String uuid) throws Exception{
+		return sqlSession.selectOne("getPurchaseByUUID", uuid);
+	}
+	
 }

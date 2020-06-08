@@ -61,7 +61,7 @@
 
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<form name="reviewForm">
+<form name="reviewForm" enctype="multipart/form-data">
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -76,7 +76,7 @@
 				</tr>
 			</table>
 		</td>
-		<td width="12" height="37">
+		<td width="500" height="37">
 			<img src="/images/ct_ttl_img03.gif"	width="12" height="37"/>
 		</td>
 	</tr>
@@ -84,42 +84,41 @@
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 13px;">
 	<tr>
-		<td height="2" colspan="3" bgcolor="D6D6D6"></td>
+		<td height="2" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
-		<td width="110" height="50" class="ct_write"> 상품명 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
-		</td>
+		<td width="500" height="50" class="ct_write"> 상품명 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/></td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="1050"> &nbsp; ${purchase.purchaseProd.prodName} </td>
+					<td width="500"> &nbsp; ${purchase.purchaseProd.prodName} </td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr>
-		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
-		<td width="104" height="50" class="ct_write"> 구매자아이디  <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		<td width="500" height="50" class="ct_write"> 구매자아이디  <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01"> &nbsp; ${purchase.buyer.userId} </td>
 	</tr>
 	<tr>
-		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
-		<td width="104" height="50" class="ct_write">구매자이름</td>
+		<td width="500" height="50" class="ct_write">구매자이름</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01"> &nbsp; ${purchase.receiverName} </td>
 	</tr>
 	<tr>
-		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
-		<td width="104" height="50" class="ct_write">별점</td>
+		<td width="500" height="50" class="ct_write">별점</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td>
 		&nbsp;<input type="checkbox" id="star" name="star" value="1"/>★
@@ -131,18 +130,27 @@
 	</tr>
 
 	<tr>
-		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 
 	<tr>
-		<td width="104" height="200" class="ct_write">후기</td>
+		<td width="500" height="200" class="ct_write">후기</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">&nbsp;<input type="text" class="test" id="review" name="review" style="text-align:left; width:1300px; height:200px; letter-spacing: 0px; border:none" /></td>
 		<input type="hidden" name="tranNo" value="${purchase.tranNo}"/>
 	</tr>
 
 	<tr>
-		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		<td width="500" height="50" class="ct_write">후기 이미지</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		<td><input type="file" id="fileUpload" name="fileUpload" multiple/>
+		</td>
+	</tr>
+
+	
+	
+	<tr>
+		<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 	</tr>
 	
 </table>

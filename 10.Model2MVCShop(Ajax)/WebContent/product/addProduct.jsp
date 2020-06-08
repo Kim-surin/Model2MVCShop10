@@ -119,7 +119,7 @@ $(function(){
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 		<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
-				<img src="/images/uploadFiles/${fileName}"/>
+				<img src="/images/uploadFiles/${fileName}" style="max-width:20%; height: auto;"/>
 				</c:forEach></td>
 			<!-- 테이블 시작 -->
 			<table border="0" cellspacing="0" cellpadding="0">

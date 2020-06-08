@@ -30,9 +30,14 @@ $(function(){
 		var name = $("#receiverName").val();
 		var phone = $("#receiverPhone").val();
 		var addr = $("#receiverAddr").val();
-		var date = $("#receiverDate").val();
+		var date = $("#receiverDate").val(); 
 		
-
+		var betweenDlivyDate = new Date(date);
+		var betweenStandardDate = new Date();
+		betweenStandardDate.setDate(betweenStandardDate.getDate() + 2);
+		
+		var betweenDay = (betweenDlivyDate.getTime() - betweenStandardDate.getTime())/1000/60/60/24; 	
+		
 		if(name == null || name.length<1){
 			alert("구매자 이름은 반드시 입력하여야 합니다.");
 			return;
@@ -52,6 +57,26 @@ $(function(){
 			alert("배송 희망 일자는 반드시 입력하셔야 합니다.");
 			return;
 		}
+		
+		if(! $("#phone2").val().match(/^\d{4}$/)){
+			alert("핸드폰 번호는 4자리 숫자만 입력 가능합니다.");
+			$("#phone2").focus();
+			return;
+		}
+		
+		if(! $("#phone3").val().match(/^\d{4}$/)){
+			alert("핸드폰 번호는 4자리 숫자만 입력 가능합니다.");
+			$("#phone3").focus();
+			return;
+		}
+		
+		if(betweenDay < -2){
+			var date = betweenStandardDate.getFullYear() + "/" + (betweenStandardDate.getMonth()+1) + "/" + betweenStandardDate.getDate();
+			alert("배송 날짜는 "+date+ " 부터 가능합니다.");
+			return;
+		}
+		
+		
 		$("form").attr("method", "POST").attr("action", "/purchase/addPurchase").submit();
 	});
 	

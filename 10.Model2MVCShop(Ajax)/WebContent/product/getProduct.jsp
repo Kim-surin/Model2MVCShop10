@@ -3,6 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html>
@@ -92,7 +93,7 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td class="ct_write01">
 				<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
-				<img src="/images/uploadFiles/${fileName}"/>
+				<img src="/images/uploadFiles/${fileName}" style="max-width:20%; height: auto;"/>
 				</c:forEach></td>
 			</tr>
 			<tr>
@@ -217,7 +218,7 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 
 				<td class="ct_write01">
 					<c:forEach items="${fn:split(product.fileName,'/')}" var="fileName">
-					<img src="/images/uploadFiles/${fileName}"/>
+					<img src="/images/uploadFiles/${fileName}" style="max-width:20%; height: auto;"/>
 					</c:forEach>
 				</td>				
 			</tr>
@@ -269,21 +270,22 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 				
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 13px; margin-right:10px">
 			<tr height="3">
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="2" align="center"></td>
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="2" align="center">No</td>
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="40" align="center" >리뷰</td>
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="2" align="center">별점</td>
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="2" align="center">리뷰작성자</td>
-				<td height="2" colspan="1" bgcolor="D6D6D6" width="2" align="center">등록일</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center"></td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">No</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">리뷰</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">별점</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">리뷰작성자</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">등록일</td>
+				<td colspan="1" bgcolor="D6D6D6" align="center">리뷰 이미지</td>
 			</tr>						
 			
 			<c:forEach var="review" items="${list}" varStatus="status">
-			<tr class="ct_list_pop" height="5">
+			<tr class="ct_list_pop">
 				<td></td>
-				<td align="center" height="5">${status.count}</td>
+				<td align="center">${status.count}</td>
 				<td align="center" >${review.reviewSentence}</td>
 				<td align="center"><c:if test="${!empty review.star}">
-									<c:if test="${review.star == 0}"> </c:if>
+									<c:if test="${review.star == 0}">  </c:if>
 									<c:if test="${review.star == 1}"> ★ </c:if>
 									<c:if test="${review.star == 2}"> ★★ </c:if>
 									<c:if test="${review.star == 3}"> ★★★ </c:if>
@@ -291,8 +293,9 @@ $("form[name='searchForm'] .ct_btn01:contains('구매')").on("click", function(){
 									<c:if test="${review.star == 5}"> ★★★★★ </c:if>
 									</c:if>
 									</td>
-				<td align="center" >${review.buyer}</td>
+				<td align="center">${review.buyer}</td>
 				<td align="center">${review.revDate}</td>
+				<td align="center"><c:forEach items="${fn:split(review.reviewImage,'/')}" var="fileName"><img src="/images/uploadFiles/${fileName}" style="max-width:20%; height: auto;"/></c:forEach></td>
 				</tr>
 				</c:forEach>
 				</table>		

@@ -7,11 +7,13 @@ import com.model2.mvc.service.domain.Purchase;
 
 public interface PurchaseDao {
 
-	public   Purchase findPurchaseByTranNo(int tranNo) throws Exception;
+	public Purchase findPurchaseByTranNo(int tranNo) throws Exception;
 
-public  Purchase findPurchaseByProdNo(int prodNo) throws Exception;
+	public Purchase findPurchaseByProdNo(int prodNo) throws Exception;
+	
+	public Purchase findPurchaseByUUID(String uuid) throws Exception;
 
-	public  List<Purchase> getPurchaseList(Search search, String buyerId) throws Exception;
+	public List<Purchase> getPurchaseList(Search search, String buyerId) throws Exception;
 	
 	public List<Purchase> getSaleList(Search search);
 
@@ -28,6 +30,6 @@ public  Purchase findPurchaseByProdNo(int prodNo) throws Exception;
 	public int getTotalCountByDeliveryList(int prodNo) throws Exception;
 	
 	public void updateRevStatusCode(Purchase purchase) throws Exception;
-	
+
 	//public String makeCurrentPageSql(String sql, Search search);
 }

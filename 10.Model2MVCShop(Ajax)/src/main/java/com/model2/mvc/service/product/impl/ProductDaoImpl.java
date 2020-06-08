@@ -32,7 +32,7 @@ public class ProductDaoImpl implements ProductDao{
 	}
 
 	public Product getProduct(int prodNo) throws Exception {
-		return sqlSession.selectOne("ProductMapper.getProductByPurchase", prodNo);
+		return sqlSession.selectOne("ProductMapper.getProduct", prodNo);
 	}
 	
 	public void updateProduct(Product product) throws Exception {
@@ -55,4 +55,7 @@ public class ProductDaoImpl implements ProductDao{
 		System.out.println("ProductDAO :: make SQL :: " + sql);
 		return sql;
 	}*/
+	public Product getProductByPurchase(int prodNo) throws Exception{
+		return sqlSession.selectOne("ProductMapper.getProductByPurchase", prodNo);
+	}
 }

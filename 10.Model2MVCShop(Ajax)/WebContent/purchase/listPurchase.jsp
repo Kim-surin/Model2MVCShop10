@@ -19,18 +19,21 @@ function fncGetPurchaseList(currentPage) {
 
 $(function(){
 	
-	$(".ct_list_pop:contains('물건도착')").on("click", function(){
-		self.location="/purchase/updateTranCode?tranNo="+$("#tranNo").val();
+	$(".pop:contains('물건도착')").on("click", function(){
+		var tranNo = $(this).children().val();
+		self.location="/purchase/updateTranCode?tranNo="+tranNo;
 	});
 	
-	$(".ct_list_pop:contains('후기쓰기')").on("click", function(){
-		self.location="/purchase/reviewPurchaseView?tran_no="+$("#tranNo").val()+"&userId="+$("#userId").val();
+	$(".pop:contains('후기쓰기')").on("click", function(){
+		var userId = $(this).children("#userId").val();
+		var tranNo = $(this).children("#tranNo").val();
+		alert(tranNo);
+		self.location="/purchase/reviewPurchaseView?tran_no="+tranNo+"&userId="+userId;
 	});
 	
 	$(".ct_list_pop td:nth-child(1)").on("click", function(){
 			//self.location="/purchase/getPurchase?tranNo="+$(this).children().val();
 		var tranNo = $(this).children().val();
-		var tran = "purchase";
 		
 		$.ajax({
 			url:"/purchase/json/getPurchase/"+tranNo,
@@ -57,7 +60,8 @@ $(function(){
 										displayValue+="</h3>";
 																									
 				$("h3").remove();
-				$("#"+tranNo+"").html(displayValue);
+				//$("#"+tranNo+"").html(displayValue);
+				$("#view").html(displayValue);
 			}
 		});	
 			
@@ -66,8 +70,7 @@ $(function(){
 	$(".ct_list_pop td:nth-child(3)").on("click", function() {
 			//self.location="/user/getUser?userId="+$(this).children().val();	
 		var userId = $(this).children().val();
-		var tran = "user";
-		
+			
 		$.ajax({
 			url:"/user/json/getUser/"+userId,
 			method:"GET",
@@ -86,7 +89,7 @@ $(function(){
 								+"</h3>";
 																									
 				$("h3").remove();
-				$("#"+userId+"").html(displayValue);
+				$("#view").html(displayValue);
 			}
 		});	
 	});
@@ -158,14 +161,13 @@ $(function(){
 		<c:if test="${fn:trim(purchase.tranCode)=='4'}"> 현재 배송완료 상태입니다. </c:if>
 		</td>
 		<td></td>
-		<td align="left">
-			<c:if test="${fn:trim(purchase.tranCode)=='3'}">물건도착</c:if>
-			<c:if test="${fn:trim(purchase.tranCode)=='4' && fn:trim(purchase.revStatusCode)=='false'}">후기쓰기</c:if>
+		<td align="left" class="pop">		
+			<c:if test="${fn:trim(purchase.tranCode)=='3'}">물건도착</c:if><input type="hidden" id="tranNo" value="${purchase.tranNo}"/>
+			<c:if test="${fn:trim(purchase.tranCode)=='4' && fn:trim(purchase.revStatusCode)=='false'}">후기쓰기</c:if> <input type="hidden" id="userId" value="${purchase.buyer.userId}"/>
 		</td>
 	</tr>
 	<tr>
-		<td id="${purchase.tranNo}" colspan="11" bgcolor="D6D7D6" height="1"></td>
-		<td id="${user.userId}" colspan="11" bgcolor="D6D7D6" height="1"></td>
+		 <td id="view" name="" colspan="11" bgcolor="D6D7D6" height="1"></td>
 	</tr>
 	</c:forEach>
 </table>

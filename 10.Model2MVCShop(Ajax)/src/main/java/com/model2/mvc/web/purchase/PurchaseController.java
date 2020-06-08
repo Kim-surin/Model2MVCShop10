@@ -1,6 +1,9 @@
 package com.model2.mvc.web.purchase;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
@@ -48,6 +52,8 @@ public class PurchaseController {
 	@Qualifier("userServiceImpl")
 	private UserService userService;
 	
+	private static final String UPLOAD_PATH = "C:\\Users\\user\\git\\repository\\Model2MVCShop10\\10.Model2MVCShop(Ajax)\\WebContent\\images\\uploadFiles";
+	
 	//setter Method 구현 않음
 		
 	public PurchaseController(){
@@ -70,7 +76,7 @@ public class PurchaseController {
 
 		System.out.println("/addPurchaseView");
 
-		Product product = productService.getProduct(prodNo);
+		Product product = productService.getProductByPurchase(prodNo);
 
 		model.addAttribute("product", product);
 
@@ -87,19 +93,22 @@ public class PurchaseController {
 
 		System.out.println("/addPurchase");
 		//Business Logic
+		UUID uuid = UUID.randomUUID();
+		String uuidAddprodNo = uuid+""+prodNo;
+		
 		HttpSession session=request.getSession(true);	
 		User user = (User)session.getAttribute("user");
 		model.addAttribute(user);
 		
 		Product product = null;
-		product = productService.getProduct(prodNo);
+		product = productService.getProductByPurchase(prodNo);
 		product.setAmount(product.getAmount()-1);
 		
 		if(product.getAmount() < 0) {
 			return "forward:/listProduct?isAmount=false"; }
 		product.setOrderCount(product.getOrderCount()+1);
 		productService.updateProduct(product);
-		product = productService.getProduct(prodNo);
+		product = productService.getProductByPurchase(prodNo);
 		
 		Purchase purchase = new Purchase();
 		purchase.setPurchaseProd(product);
@@ -112,10 +121,10 @@ public class PurchaseController {
 		purchase.setDlvyDate(request.getParameter("receiverDate"));
 		purchase.setTranCode("1"); 
 		purchase.setRevStatusCode(false);
-		
+		purchase.setUuid(uuidAddprodNo);
 		purchaseService.addPurchase(purchase);
-		purchaseService.updateTranCode(purchaseService.getPurchase2(prodNo));
-		purchase = purchaseService.getPurchase2(prodNo);
+		purchaseService.updateTranCode(purchaseService.getPurchaseByUUID(uuidAddprodNo));
+		purchase = purchaseService.getPurchaseByUUID(uuidAddprodNo);
 		
 		
 		model.addAttribute(purchase);
@@ -130,7 +139,7 @@ public class PurchaseController {
 		
 		//Business Logic
 		Map<String, Object> mapDelivery = purchaseService.getDeliveryList(prodNo);
-		Product product = productService.getProduct(prodNo);	
+		Product product = productService.getProductByPurchase(prodNo);	
 		
 		// Model 과 View 연결
 		model.addAttribute("listDelivery", mapDelivery.get("list"));
@@ -149,7 +158,7 @@ public class PurchaseController {
 		purchaseService.updateTranCode(purchase);
 		purchase = purchaseService.getPurchase(tranNo);
 		
-		Product product = productService.getProduct(prodNo);
+		Product product = productService.getProductByPurchase(prodNo);
 		product.setOrderCount(product.getOrderCount()-1);
 		productService.updateProduct(product);
 		
@@ -186,7 +195,7 @@ public class PurchaseController {
 		
 		Map<String, Object> map =purchaseService.getPurchaseList(search, user.getUserId());
 		
-		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
+		Page resultPage = new Page(search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
 		
 		model.addAttribute("list", map.get("list"));
 		model.addAttribute("resultPage", resultPage);
@@ -209,29 +218,51 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping(value="reviewPurchase")
-	public String reviewPurchase(HttpServletRequest request, @RequestParam("tranNo") int tranNo, @RequestParam("star") int star , @RequestParam("review") String reviewSentence) throws Exception{
+	public String reviewPurchase(HttpServletRequest request, @RequestParam("tranNo") int tranNo, @RequestParam("star") int star , @RequestParam("review") String reviewSentence, @RequestParam("fileUpload") MultipartFile[] fileUpload) throws Exception{
 		
 		System.out.println("/reviewPurchase");
 		
-		//Business Logic
 		HttpSession session=request.getSession(true);	
 		User user = (User)session.getAttribute("user");
 		
 		Purchase purchase = purchaseService.getPurchase(tranNo);
+		
+		String manySaveName = "";
+		
+		 for(MultipartFile f : fileUpload){
+			 String originalFileName = f.getOriginalFilename();
+			 String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			 //String savedFileName =  UUID.randomUUID()+"_"+originalFileName;
+			 
+			 manySaveName+=originalFileName+"/";
+
+			    // 저장할 File 객체를 생성(껍데기 파일)
+			    File saveFile = new File(UPLOAD_PATH,originalFileName); // 저장할 폴더 이름, 저장할 파일 이름
+
+			    try {
+			    	f.transferTo(saveFile); // 업로드 파일에 saveFile이라는 껍데기 입힘
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			        return null;
+			    }
+		    }
 		
 		Review review = new Review();
 		review.setProdNo(purchase.getPurchaseProd().getProdNo());
 		review.setBuyer(user.getUserId());
 		review.setReviewSentence(reviewSentence);
 		review.setStar(star);
+		review.setReviewImage(manySaveName);
+		
 		
 		reviewService.addReview(review);
 		purchaseService.updateRevStatusCode(purchase);
 		
 		Product product = new Product();
-		product = productService.getProduct(purchase.getPurchaseProd().getProdNo());
+		product = productService.getProductByPurchase(purchase.getPurchaseProd().getProdNo());
 		int countReview= reviewService.countReviewNum(purchase.getPurchaseProd().getProdNo());
-		product.setStar((product.getStar()+star)/countReview);		
+		product.setTotalStar(product.getTotalStar()+star);
+		product.setStar(Math.round(product.getTotalStar()/countReview));		
 		productService.updateProduct(product);		
 		
 		return "forward:/purchase/listPurchase";
